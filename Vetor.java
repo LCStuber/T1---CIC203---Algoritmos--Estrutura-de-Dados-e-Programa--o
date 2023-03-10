@@ -27,7 +27,30 @@ public class Vetor{
         }
     }
     static void insertionSort(int[] v){
+        for (int i=0; i < v.length; i++){
+            int chave = v[i];
+            int j = i-1;
+            while (j >=0 && v[j] > chave){
+                v[j+1] = v[j];
+                j -= 1;
+            }
+            v[j+1] = chave;
 
+        }
+    }
+    static void selectionSort(int[] v){
+        for (int j=0; j< v.length; j++){
+            int valorMinimo = j;
+            for (int i =j+1;i <v.length; i++){
+                if (v[i] < v[valorMinimo]){
+                    valorMinimo = i;
+                }
+                
+            }
+            int guardaValor = v[j];
+            v[j] = v[valorMinimo];
+            v[valorMinimo] = guardaValor;
+        }
     }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -38,9 +61,11 @@ public class Vetor{
             int[] v = new int[n];
             geraVetor(v);
             long ini = new Date().getTime();
-            bubbleSort(v);
+            // bubbleSort(v);
+            // insertionSort(v);
+            selectionSort(v);
             long fim = new Date().getTime();
-            // exibeVetor(v);
+            exibeVetor(v);
             System.out.println("Tempo: " + (fim-ini)+ " milissegundos");
         } while (n>0);
         scanner.close();

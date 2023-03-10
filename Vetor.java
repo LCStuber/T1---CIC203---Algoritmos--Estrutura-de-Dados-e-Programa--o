@@ -53,21 +53,19 @@ public class Vetor{
         }
     }
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n;
-        do{
-            System.out.print("Digite o tamanho do vetor para o teste: ");
-            n = scanner.nextInt();
+        int n = 10;
+        for (int i = 0; i < n; i++){
             int[] v = new int[n];
-            geraVetor(v);
             long ini = new Date().getTime();
+            geraVetor(v);
             // bubbleSort(v);
             // insertionSort(v);
             selectionSort(v);
             long fim = new Date().getTime();
             exibeVetor(v);
-            System.out.println("Tempo: " + (fim-ini)+ " milissegundos");
-        } while (n>0);
-        scanner.close();
+            long tempoTotal = fim-ini;
+            System.out.println("Tempo: " + tempoTotal + " milissegundos");
+        }
+        
     }
 }

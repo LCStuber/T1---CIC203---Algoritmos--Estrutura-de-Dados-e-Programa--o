@@ -1,71 +1,134 @@
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
-public class Vetor{
-    static void geraVetor (int[] v){
+public class Vetor {
+    static void geraVetor(int[] v) {
         Random random = new Random();
-        for (int i=0;i<v.length;i++){
-            v[i] = random.nextInt(v.length*10);
+        for (int i = 0; i < v.length; i++) {
+            v[i] = random.nextInt(v.length * 10);
         }
     }
-    static void exibeVetor(int[] v){
-        for (int i=0; i < v.length; i++){
+
+    static void exibeVetor(int[] v) {
+        for (int i = 0; i < v.length; i++) {
             System.out.print(v[i] + " ");
         }
         System.out.println();
     }
-    static void bubbleSort(int[] v){
-        for (int i = 1; i < v.length; i++){
-            for (int j=0; j < v.length-i; j++){
-                if (v[j] > v[j+1]){
+
+    static void bubbleSort(int[] v) {
+        for (int i = 1; i < v.length; i++) {
+            for (int j = 0; j < v.length - i; j++) {
+                if (v[j] > v[j + 1]) {
                     int aux = v[j];
-                    v[j] = v[j+1];
-                    v[j+1] = aux;
+                    v[j] = v[j + 1];
+                    v[j + 1] = aux;
                 }
             }
         }
     }
-    static void insertionSort(int[] v){
-        for (int i=0; i < v.length; i++){
+
+    static void insertionSort(int[] v) {
+        for (int i = 0; i < v.length; i++) {
             int chave = v[i];
-            int j = i-1;
-            while (j >=0 && v[j] > chave){
-                v[j+1] = v[j];
+            int j = i - 1;
+            while (j >= 0 && v[j] > chave) {
+                v[j + 1] = v[j];
                 j -= 1;
             }
-            v[j+1] = chave;
+            v[j + 1] = chave;
 
         }
     }
-    static void selectionSort(int[] v){
-        for (int j=0; j< v.length; j++){
+
+    static void selectionSort(int[] v) {
+        for (int j = 0; j < v.length; j++) {
             int valorMinimo = j;
-            for (int i =j+1;i <v.length; i++){
-                if (v[i] < v[valorMinimo]){
+            for (int i = j + 1; i < v.length; i++) {
+                if (v[i] < v[valorMinimo]) {
                     valorMinimo = i;
                 }
-                
+
             }
             int guardaValor = v[j];
             v[j] = v[valorMinimo];
             v[valorMinimo] = guardaValor;
         }
     }
-    public static void main(String[] args) {
-        int n = 10;
-        for (int i = 0; i < n; i++){
-            int[] v = new int[n];
-            long ini = new Date().getTime();
-            geraVetor(v);
-            // bubbleSort(v);
-            // insertionSort(v);
-            selectionSort(v);
-            long fim = new Date().getTime();
-            exibeVetor(v);
-            long tempoTotal = fim-ini;
-            System.out.println("Tempo: " + tempoTotal + " milissegundos");
+
+    private static Connection createConnection() {
+        try {
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://mysql.LCStuber.net:3306/T1_CIC203?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT",
+                    "login", "senha");
+            System.out.println("Conectado e enviando dados ao banco de dados");
+            return connection;
+        } catch (SQLException e) {
+            throw new RuntimeException("Cannot connect to database" + e);
         }
-        
+    }
+
+    static void salvarDados(int tamanho, long tempo, String hostname, String tipo) {
+        try {
+            Connection con = createConnection();
+            PreparedStatement pst = con
+                    .prepareStatement("INSERT INTO Resultados (tamanho, tempo, pc, tipo) VALUES (?,?,?, ?);");
+            pst.setInt(1, tamanho);
+            pst.setLong(2, tempo);
+            pst.setString(3, hostname);
+            pst.setString(4, tipo);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        System.out.println("Dados enviados!");
+    }
+
+    static String getNomePC() {
+        String hostname = "Unknown";
+        try {
+            InetAddress addr;
+            addr = InetAddress.getLocalHost();
+            hostname = addr.getHostName();
+        } catch (UnknownHostException ex) {
+            System.out.println("Hostname can not be resolved");
+        }
+        return hostname;
+    }
+
+    public static void main(String[] args) {
+        String hostname = getNomePC();
+        for (int n = 40000; n <= 2560000; n = n * 2) {
+            for (int i = 1; i < 20; i++) {
+                int[] vB = new int[n];
+                int[] vI = new int[n];
+                int[] vS = new int[n];
+                geraVetor(vB);
+                geraVetor(vI);
+                geraVetor(vS);
+                long iniB = new Date().getTime();
+                bubbleSort(vB);
+                long fimB = new Date().getTime();
+                long iniI = new Date().getTime();
+                insertionSort(vI);
+                long fimI = new Date().getTime();
+                long iniS = new Date().getTime();
+                selectionSort(vS);
+                long fimS = new Date().getTime();
+                long tempoTotalB = fimB - iniB;
+                salvarDados(n, tempoTotalB, hostname, "bubbleSort");
+                long tempoTotalI = fimI - iniI;
+                salvarDados(n, tempoTotalI, hostname, "insertionSort");
+                long tempoTotalS = fimS - iniS;
+                salvarDados(n, tempoTotalS, hostname, "selectionSort");
+                System.out.println("Já foram feitas: " + i + " de 20 operações! Enquanto o valor do vetor é de: " + n + " :D");
+            }
+        }
     }
 }

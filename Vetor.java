@@ -102,32 +102,44 @@ public class Vetor {
         return hostname;
     }
 
+    static void realizaTeste(int n, String hostname){
+        int[] vB = new int[n];
+        int[] vI = new int[n];
+        int[] vS = new int[n];
+        geraVetor(vB);
+        geraVetor(vI);
+        geraVetor(vS);
+        long iniB = new Date().getTime();
+        bubbleSort(vB);
+        long fimB = new Date().getTime();
+        long iniI = new Date().getTime();
+        insertionSort(vI);
+        long fimI = new Date().getTime();
+        long iniS = new Date().getTime();
+        selectionSort(vS);
+        long fimS = new Date().getTime();
+        long tempoTotalB = fimB - iniB;
+        salvarDados(n, tempoTotalB, hostname, "bubbleSort");
+        long tempoTotalI = fimI - iniI;
+        salvarDados(n, tempoTotalI, hostname, "insertionSort");
+        long tempoTotalS = fimS - iniS;
+        salvarDados(n, tempoTotalS, hostname, "selectionSort");
+    }
+
     public static void main(String[] args) {
         String hostname = getNomePC();
-        for (int n = 40000; n <= 2560000; n = n * 2) {
-            for (int i = 1; i < 20; i++) {
-                int[] vB = new int[n];
-                int[] vI = new int[n];
-                int[] vS = new int[n];
-                geraVetor(vB);
-                geraVetor(vI);
-                geraVetor(vS);
-                long iniB = new Date().getTime();
-                bubbleSort(vB);
-                long fimB = new Date().getTime();
-                long iniI = new Date().getTime();
-                insertionSort(vI);
-                long fimI = new Date().getTime();
-                long iniS = new Date().getTime();
-                selectionSort(vS);
-                long fimS = new Date().getTime();
-                long tempoTotalB = fimB - iniB;
-                salvarDados(n, tempoTotalB, hostname, "bubbleSort");
-                long tempoTotalI = fimI - iniI;
-                salvarDados(n, tempoTotalI, hostname, "insertionSort");
-                long tempoTotalS = fimS - iniS;
-                salvarDados(n, tempoTotalS, hostname, "selectionSort");
-                System.out.println("Já foram feitas: " + i + " de 20 operações! Enquanto o valor do vetor é de: " + n + " :D");
+        int j = 20; //Quantas operações quer fazer de 40k até 640k
+        int k = 2; //Quantas operações quer fazer de 1M e 2M
+        for (int n = 40000; n <= 640000; n = n * 2) {
+            for (int i = 1; i <= j; i++) {
+                realizaTeste(n,hostname);
+                System.out.println("Já foram feitas: " + i + " de " + j + " operações! Enquanto o valor do vetor é de: " + n + " :D");
+            }
+        }
+        for (int n = 1280000; n <= 2560000; n = n * 2) {
+            for (int i = 1; i <= k; i++) {
+                realizaTeste(n,hostname);
+                System.out.println("Já foram feitas: " + i + " de " + k + " operações! Enquanto o valor do vetor é de: " + n + " :D");
             }
         }
     }

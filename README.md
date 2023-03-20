@@ -1,11 +1,11 @@
 # T1 - CIC203 - Algoritmos, Estrutura de Dados e Programação
 ### Integrantes:
-* Isaac D Andrea
-* Leonardo C Stuber
-* Carlos H L Barros
-* Mateus C Martins
-* Othavio Losovoi
-* Raul M Souza
+* Leonardo Cazotto Stuber			22.01290-7
+* Carlos Henrique Lucena Barros	    22.01211-7
+* Isaac D Andrea					22.01841-7
+* Raul Monteiro de Souza Carvalho	22.01436-5
+* Othavio Carvalho Losovoi			22.01545-0
+* Mateus Capaldo Martins			22.01082-3
 
 ---
 
